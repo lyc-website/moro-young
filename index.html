@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>moro young — 商品目錄</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Noto+Sans+JP:wght@300;400;700&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f8fafc;--sf:#fff;--ink:#0f172a;--i2:#475569;--i3:#94a3b8;
+  --bd:#e2e8f0;--bd2:#cbd5e1;--gr:#059669;--grl:#ecfdf5;
+  --rd:#dc2626;--rdl:#fef2f2;--am:#d97706;--aml:#fffbeb;
+  --bl:#2563eb;--bll:#eff6ff;--gd:#d4a853;
+  --fn:'Microsoft JhengHei','Noto Sans TC',sans-serif;
+  --r:18px;--rl:26px;
+  --s1:0 1px 3px rgba(0,0,0,.06);--s2:0 4px 20px rgba(0,0,0,.09);--s3:0 8px 36px rgba(0,0,0,.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--fn);font-size:14px;line-height:1.6;min-height:100vh}
+body.lang-ja{font-family:'Noto Sans JP','Microsoft JhengHei',sans-serif}
+body.lang-ko{font-family:'Noto Sans KR','Microsoft JhengHei',sans-serif}
+input,textarea,button{font-family:inherit}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:4px}
+
+.topbar{background:var(--sf);border-bottom:1px solid var(--bd);padding:11px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:10px;flex-wrap:wrap}
+.brand{font-size:24px;font-weight:700;letter-spacing:.04em;color:var(--ink)}
+.tr{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.lg-grp{display:flex;gap:2px;background:var(--bg);border-radius:11px;padding:3px}
+.lb{padding:4px 10px;border:none;border-radius:8px;background:transparent;color:var(--i2);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s}
+.lb.active{background:var(--sf);color:var(--ink);box-shadow:var(--s1)}
+.tbtn{padding:6px 14px;border-radius:11px;border:1.5px solid var(--bd2);background:transparent;color:var(--i2);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.tbtn:hover{border-color:var(--ink);color:var(--ink)}
+.tbtn.green{background:var(--gr);color:#fff;border-color:var(--gr)}.tbtn.green:hover{background:#047857}
+.tbtn.act{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* CLOUD STATUS */
+.cpill{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;border:1px solid var(--bd);cursor:pointer;background:var(--bg);color:var(--i3);transition:all .2s}
+.cpill:hover{border-color:var(--i2);color:var(--ink)}
+.cdot{width:6px;height:6px;border-radius:50%;background:var(--i3);flex-shrink:0;transition:background .3s}
+.cdot.on{background:var(--gr)}.cdot.saving{background:var(--am);animation:blink .7s infinite}.cdot.err{background:var(--rd)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* SETUP / MODALS */
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.mo{background:var(--sf);border-radius:var(--rl);width:100%;max-width:580px;max-height:91vh;overflow-y:auto;box-shadow:var(--s3)}
+.mhd{padding:18px 22px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.mttl{font-size:15px;font-weight:700;color:var(--ink)}
+.mbd{padding:22px}
+.mft{padding:13px 22px;border-top:1px solid var(--bd);display:flex;gap:8px;justify-content:flex-end}
+
+/* ADMIN BARS */
+.abar{background:var(--ink);padding:6px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.actrl{background:#f1f5f9;border-bottom:1px solid var(--bd);padding:10px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+
+/* DISCLAIMER */
+.disc{background:linear-gradient(135deg,#0f172a,#1a2e4a);color:#fff}
+.disc-in{padding:16px 28px}
+.disc-ttl{font-size:13px;font-weight:700;color:var(--gd);margin-bottom:5px}
+.disc-txt{font-size:12px;color:rgba(255,255,255,.52);line-height:1.75}
+.disc-txt a{color:var(--gd);text-decoration:none}
+.disc-tog{width:100%;background:rgba(0,0,0,.22);border:none;padding:9px 28px;display:flex;align-items:center;justify-content:space-between;color:rgba(255,255,255,.38);font-size:10px;font-weight:700;letter-spacing:.05em;cursor:pointer;transition:color .15s}
+.disc-tog:hover{color:rgba(255,255,255,.65)}
+.disc-bd{overflow:hidden;transition:max-height .35s ease}
+
+/* PAGE */
+.pw{max-width:1200px;margin:0 auto;padding:22px 24px}
+@media(max-width:640px){.pw{padding:14px}.topbar,.abar,.actrl{padding-left:14px;padding-right:14px}.disc-in{padding:14px}.disc-tog{padding:9px 14px}}
+
+/* STAT */
+.stile{background:var(--sf);border-radius:var(--r);border:1px solid var(--bd);padding:13px 17px;box-shadow:var(--s1)}
+.slbl{font-size:10px;font-weight:700;color:var(--i3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+.sval{font-size:22px;font-weight:700;color:var(--ink);line-height:1}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:7px 15px;border-radius:11px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.bink{background:var(--ink);color:#fff}.bink:hover{background:#1e293b}
+.bgr{background:var(--gr);color:#fff}.bgr:hover{background:#047857}
+.bgh{background:transparent;color:var(--i2);border:1.5px solid var(--bd2)}.bgh:hover{border-color:var(--ink);color:var(--ink)}
+.bsm{padding:4px 11px;font-size:11px;border-radius:8px}
+.bico{width:29px;height:29px;padding:0;border-radius:8px;background:var(--bg);border:1px solid var(--bd);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--i3);transition:all .15s}
+.bico:hover{background:var(--bd);color:var(--ink)}
+.bico.d:hover{background:var(--rdl);color:var(--rd);border-color:#fecaca}
+
+/* FORM */
+.fg{display:flex;flex-direction:column;gap:5px}
+.fl{font-size:10px;font-weight:700;color:var(--i3);letter-spacing:.05em;text-transform:uppercase}
+.fi{height:39px;padding:0 11px;border:1.5px solid var(--bd);border-radius:11px;background:var(--bg);color:var(--ink);font-size:13px;font-weight:500;outline:none;transition:border-color .15s;width:100%}
+.fi:focus{border-color:var(--ink);background:var(--sf)}
+.fta{padding:9px 11px;border:1.5px solid var(--bd);border-radius:11px;background:var(--bg);color:var(--ink);font-size:13px;outline:none;transition:border-color .15s;width:100%;resize:vertical;min-height:72px;line-height:1.5}
+.fta:focus{border-color:var(--ink);background:var(--sf)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* PRODUCT GRID */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.pc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;transition:box-shadow .2s,border-color .2s;position:relative;cursor:pointer}
+.pc:hover{box-shadow:var(--s2);border-color:var(--bd2)}
+.pc.dim{opacity:.28;filter:grayscale(.9)}
+.pimg{width:100%;height:188px;object-fit:cover;display:block;background:var(--bg)}
+.piph{width:100%;height:188px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--i3)}
+.piph svg{opacity:.18}
+.pb{padding:14px 15px}
+.pnum{position:absolute;top:9px;right:9px;background:rgba(255,255,255,.9);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--i3);backdrop-filter:blur(4px)}
+.pchk{position:absolute;top:9px;left:9px;display:none}
+.em-on .pchk{display:block}
+.pchk input{width:17px;height:17px;accent-color:var(--gr);cursor:pointer}
+.ptitle{font-size:18px;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:3px}
+.pauth{font-size:11px;color:var(--i3);font-weight:500;margin-bottom:9px}
+.ppr{font-size:12px;font-weight:700;color:var(--i2)}
+.ppr-c{font-size:10px;color:var(--i3);margin-left:1px}
+.pws{font-size:11px;color:var(--gr);font-weight:700;margin-left:8px}
+.ptags{display:flex;flex-wrap:wrap;gap:3px;margin-top:7px}
+.pdrv{display:inline-flex;align-items:center;gap:4px;margin-top:7px;font-size:10px;font-weight:700;color:var(--bl);background:var(--bll);border-radius:6px;padding:2px 8px}
+.pedit{display:flex;gap:5px;margin-top:9px}
+
+/* DETAIL MODAL */
+.dimg{width:100%;max-height:290px;object-fit:cover;display:block;border-radius:var(--rl) var(--rl) 0 0}
+.ddrv{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:13px;padding:14px;margin-top:14px}
+.ddrv-ttl{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--bl);margin-bottom:7px}
+.ddrv-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:var(--bl);color:#fff;border-radius:10px;font-size:12px;font-weight:700;text-decoration:none}
+.ddrv-btn:hover{background:#1d4ed8}
+.dbio{margin-top:10px;padding:10px 12px;background:var(--bg);border-radius:10px;border-left:3px solid var(--bd2)}
+.dbio-lbl{font-size:10px;font-weight:700;color:var(--i3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+
+/* UPLOAD */
+.upz{border:2px dashed var(--bd2);border-radius:var(--r);background:var(--bg);text-align:center;cursor:pointer;transition:all .15s;color:var(--i3);font-size:12px;font-weight:500;overflow:hidden;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:6px}
+.upz:hover{border-color:var(--gr);background:var(--grl);color:var(--gr)}
+.upz img{max-width:100%;max-height:130px;object-fit:contain;border-radius:10px;display:block}
+
+/* WS */
+.wsp{background:var(--bg);border-radius:var(--r);padding:16px;border:1px solid var(--bd)}
+
+/* TAGS */
+.twrap{display:flex;flex-wrap:wrap;gap:4px;padding:6px 10px;border:1.5px solid var(--bd);border-radius:11px;background:var(--bg);min-height:38px;cursor:text;align-items:center}
+.ti{display:inline-flex;align-items:center;gap:3px;background:var(--ink);color:#fff;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700}
+.ti button{background:none;border:none;color:rgba(255,255,255,.55);cursor:pointer;padding:0;font-size:13px;line-height:1}
+.tinput{border:none;background:transparent;font-family:var(--fn);font-size:12px;color:var(--ink);outline:none;min-width:70px;flex:1}
+
+/* BANK */
+.bank{background:var(--ink);border-radius:var(--rl);padding:24px 28px;color:#fff}
+.bkgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px 22px;margin-bottom:4px}
+.bfl{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.32);margin-bottom:1px}
+.bfv{font-size:13px;color:rgba(255,255,255,.82)}
+.bacct{font-size:17px;font-weight:700;letter-spacing:.06em;color:#fff}
+.bcon{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:rgba(255,255,255,.38)}
+.bcon a{color:var(--gd);text-decoration:none}
+
+/* EXPORT */
+.exps{background:var(--sf);border-radius:var(--rl);border:1px solid var(--bd);padding:20px;margin-top:16px}
+.expg{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:12px}
+.expc{border:1.5px solid var(--bd);border-radius:var(--r);padding:13px;cursor:pointer;transition:all .15s;background:var(--bg)}
+.expc:hover{border-color:var(--ink);background:var(--sf);box-shadow:var(--s1)}
+
+/* TOGGLE */
+.tw{display:flex;align-items:center;gap:7px}
+.tog{width:37px;height:21px;background:var(--bd2);border-radius:11px;position:relative;cursor:pointer;transition:background .2s;border:none;padding:0;flex-shrink:0}
+.tog.on{background:var(--gr)}
+.tog::after{content:'';position:absolute;top:3px;left:3px;width:15px;height:15px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.tog.on::after{transform:translateX(16px)}
+.tlbl{font-size:12px;font-weight:600;color:var(--i2)}
+
+/* SEARCH */
+.sb{display:flex;align-items:center;gap:7px;background:var(--sf);border:1.5px solid var(--bd);border-radius:12px;padding:5px 11px;flex:1;max-width:250px}
+.sb input{border:none;background:transparent;font-family:var(--fn);font-size:13px;color:var(--ink);outline:none;flex:1}
+
+/* NOTIF */
+.ntf{position:fixed;bottom:18px;right:18px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transform:translateY(8px);transition:all .22s;pointer-events:none;box-shadow:var(--s3)}
+.ntf.show{opacity:1;transform:translateY(0)}
+.ntf.gr{background:var(--gr)}.ntf.am{background:var(--am)}
+
+/* DEPLOY BANNER */
+.deploy-banner{background:linear-gradient(135deg,#1e3a5f,#0f172a);border-radius:var(--rl);padding:22px 26px;margin-bottom:22px;border:1px solid #334155}
+.deploy-step{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.deploy-num{width:24px;height:24px;border-radius:50%;background:var(--gd);color:#0f172a;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.deploy-url{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:10px 14px;font-family:monospace;font-size:12px;color:#e2e8f0;word-break:break-all;margin-top:8px}
+
+hr{height:1px;background:var(--bd);border:none;margin:20px 0}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .28s ease both}
+
+/* LOADING STATE */
+.loading-state{text-align:center;padding:60px 20px;color:var(--i3)}
+.loading-state .spin{width:32px;height:32px;border:3px solid var(--bd);border-top-color:var(--gr);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body class="lang-zh">
+<div class="ntf" id="ntf"></div>
+
+<!-- ═══ CLOUD SETUP MODAL ═══ -->
+<div class="ov" id="sov" style="display:none">
+  <div class="mo">
+    <div class="mhd"><div class="mttl">☁️ 雲端設定</div><button class="bico" onclick="closeSetup()">✕</button></div>
+    <div class="mbd" style="display:flex;flex-direction:column;gap:14px">
+      <div style="background:var(--aml);border-radius:11px;padding:11px 14px;font-size:12px;color:var(--am);font-weight:600;border:1px solid #fde68a">
+        ⚠️ 請先至 <b>jsonbin.io</b> 驗證 Email，否則連線會失敗
+      </div>
+      <div class="fg"><label class="fl">JSONBin Master Key（$2a$10$...）</label>
+        <input class="fi" type="text" id="sk" style="font-family:monospace;font-size:11px" placeholder="$2a$10$...">
+        <div style="font-size:11px;color:var(--i3);margin-top:2px">只儲存在您的瀏覽器，不傳給任何第三方。<a href="https://jsonbin.io" target="_blank" style="color:var(--bl)">前往取得免費 Key →</a></div>
+      </div>
+      <div class="fg"><label class="fl">Bin ID（已有的話填入，否則留空自動建立）</label>
+        <input class="fi" type="text" id="sbid" placeholder="留空 → 自動建立" style="font-family:monospace;font-size:11px">
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn bgr" onclick="connectCloud()">✓ 連線並同步</button>
+        <button class="btn bgh" onclick="closeSetup()">稍後再設</button>
+      </div>
+      <div id="serr" style="display:none;color:var(--rd);font-size:12px;font-weight:600;white-space:pre-wrap;background:var(--rdl);border-radius:8px;padding:8px 12px;border:1px solid #fecaca"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EDIT MODAL ═══ -->
+<div class="ov" id="eov" style="display:none" onclick="if(event.target===this)closeEdit()">
+  <div class="mo">
+    <div class="mhd"><div class="mttl" id="emttl">新增作品</div><button class="bico d" onclick="closeEdit()">✕</button></div>
+    <div class="mbd">
+      <div style="display:flex;flex-direction:column;gap:13px">
+        <div class="fg">
+          <label class="fl">作品圖片</label>
+          <div class="upz" id="upz" onclick="document.getElementById('upf').click()">
+            <div id="uppreview"></div>
+            <div id="uphint" style="display:flex;flex-direction:column;align-items:center;gap:5px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <div>點擊上傳（自動壓縮）</div>
+              <div style="font-size:10px;color:var(--i3)">JPG / PNG / WEBP</div>
+            </div>
+          </div>
+          <input type="file" id="upf" accept="image/*" style="display:none" onchange="onFileUp(event)">
+          <button class="btn bsm bgh" id="clrph" style="display:none;margin-top:5px" onclick="clearPhoto()">✕ 移除圖片</button>
+        </div>
+        <div class="fg"><label class="fl">Google Drive 圖片資料夾（供客人下載）</label>
+          <input class="fi" type="text" id="edrv" placeholder="https://drive.google.com/drive/folders/...">
+          <div style="font-size:11px;color:var(--i3);margin-top:2px">設定後客人詳情頁會看到「↓ 下載圖片」按鈕</div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl" id="let">作品名稱</label><input class="fi" type="text" id="etitle"></div>
+          <div class="fg"><label class="fl" id="lea">藝術家</label>
+            <input class="fi" type="text" id="eauthor" list="alist" autocomplete="off" oninput="onAuthInput()">
+            <datalist id="alist"></datalist>
+          </div>
+        </div>
+        <div class="fg"><label class="fl" id="leab">藝術家介紹</label><textarea class="fta" id="eabio" style="min-height:60px" placeholder="背景、創作脈絡、展覽經歷…"></textarea></div>
+        <div class="fg"><label class="fl" id="lep">售價（TWD）</label><input class="fi" type="number" id="eprice" oninput="updateWs()"></div>
+        <div class="wsp">
+          <div style="font-size:10px;font-weight:700;color:var(--i3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:11px" id="lews">批發價設定</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div class="fg" style="flex:1;min-width:100px"><label class="fl">折扣率 %</label><input class="fi" type="number" id="ewspct" value="70" min="1" max="99" oninput="updateWs()"></div>
+            <div style="text-align:center;padding-top:15px"><div style="font-size:10px;color:var(--i3);font-weight:600" id="wspl">批發價</div><div style="font-size:19px;font-weight:700;color:var(--gr)" id="wspv">—</div></div>
+            <div style="text-align:center;padding-top:15px"><div style="font-size:10px;color:var(--i3);font-weight:600" id="wsml">毛利</div><div style="font-size:19px;font-weight:700;color:var(--i2)" id="wsmv">—</div></div>
+          </div>
+          <div style="margin-top:8px"><label class="fl">或直接輸入批發價</label><input class="fi" type="number" id="ewsd" placeholder="留空→依折扣率" oninput="onWsDirect()"></div>
+        </div>
+        <div class="fg"><label class="fl" id="lei">作品介紹</label><textarea class="fta" id="eintro"></textarea></div>
+        <div class="fg"><label class="fl">Hashtag</label><div class="twrap" id="twrap" onclick="document.getElementById('tinput').focus()"></div></div>
+        <div class="fg"><label class="fl" id="les">社群 / 官網</label><input class="fi" type="text" id="esoc" placeholder="@instagram / website"></div>
+      </div>
+    </div>
+    <div class="mft"><button class="btn bgh" onclick="closeEdit()" id="btnc">取消</button><button class="btn bink" onclick="saveArtwork()" id="btns">儲存</button></div>
+  </div>
+</div>
+
+<!-- ═══ DETAIL MODAL (shared by both views) ═══ -->
+<div class="ov" id="dov" style="display:none" onclick="if(event.target===this)closeDet()">
+  <div class="mo" style="max-width:510px">
+    <div style="position:relative">
+      <div id="dimgwrap"></div>
+      <button class="bico d" onclick="closeDet()" style="position:absolute;top:11px;right:11px;background:rgba(255,255,255,.9);border:none">✕</button>
+    </div>
+    <div class="mbd">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:20px;font-weight:700;color:var(--ink);line-height:1.2" id="dtitle"></div>
+          <div style="font-size:12px;color:var(--i3);margin-top:3px" id="dauthor"></div>
+          <div class="dbio" id="dbiowrap" style="display:none"><div class="dbio-lbl" id="dbiolvl">藝術家介紹</div><div style="font-size:12px;color:var(--i2);line-height:1.7;white-space:pre-wrap" id="dbio"></div></div>
+        </div>
+        <div id="dpricewrap" style="text-align:right;flex-shrink:0">
+          <div style="font-size:15px;font-weight:700;color:var(--ink)" id="dprice"></div>
+          <div style="font-size:11px;color:var(--gr);font-weight:700;margin-top:1px" id="dws"></div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--i2);line-height:1.8;margin-top:13px;white-space:pre-wrap" id="dintro"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:11px" id="dtags"></div>
+      <div style="font-size:12px;color:var(--gr);font-weight:600;margin-top:8px" id="dsoc"></div>
+      <div class="ddrv" id="ddrvbox" style="display:none">
+        <div class="ddrv-ttl" id="ddrvttl">作品圖片 · 供下載使用</div>
+        <div style="font-size:12px;color:var(--bl);margin-bottom:10px" id="ddrvdesc"></div>
+        <a href="#" target="_blank" rel="noopener" class="ddrv-btn" id="ddrvbtn">↓ 下載作品圖片</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN PAGE ═══ -->
+<div id="adminPage" style="display:none">
+<header class="topbar">
+  <div class="brand">moro young
+    <div class="cpill" id="cpill" onclick="openSetup()"><div class="cdot" id="cdot"></div><span id="ctxt">設定雲端</span></div>
+  </div>
+  <div class="tr">
+    <div class="lg-grp">
+      <button class="lb active" onclick="setLang('zh',this)">繁中</button>
+      <button class="lb" onclick="setLang('en',this)">EN</button>
+      <button class="lb" onclick="setLang('ja',this)">日本語</button>
+      <button class="lb" onclick="setLang('ko',this)">한국어</button>
+    </div>
+    <button class="tbtn green" onclick="showExport()"><span id="explbl">匯出 / 分享</span></button>
+  </div>
+</header>
+<div class="abar">
+  <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:.05em">管理模式</div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap">
+    <button class="btn bsm" style="background:rgba(255,255,255,.1);color:#fff;border:none" onclick="selAll()" id="bsela">全選</button>
+    <button class="btn bsm" style="background:rgba(255,255,255,.1);color:#fff;border:none" onclick="selNone()" id="bseln">全不選</button>
+    <button class="btn bsm" style="background:var(--gd);color:#0f172a;border:none;font-weight:700" onclick="openAdd()" id="badd">+ 新增作品</button>
+  </div>
+</div>
+<div class="actrl">
+  <div class="tw"><button class="tog" id="togbank" onclick="togBank()"></button><span class="tlbl" id="lblbank">匯款資訊顯示給客戶</span></div>
+  <div class="tw"><button class="tog" id="togws" onclick="togWs()"></button><span class="tlbl" id="lblws">顯示批發價（僅管理端）</span></div>
+</div>
+<div class="pw">
+  <!-- DEPLOY BANNER -->
+  <div class="deploy-banner" id="deployBanner">
+    <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px">🚀 把這個系統上線（免費，30 秒完成）</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:16px">上線後客人只需打開網址就能即時看到所有作品，資料透過 JSONBin 自動同步。</div>
+    <div class="deploy-step">
+      <div class="deploy-num">1</div>
+      <div style="color:rgba(255,255,255,.75);font-size:13px">先完成右上角的雲端設定（JSONBin），讓資料可以雲端同步</div>
+    </div>
+    <div class="deploy-step">
+      <div class="deploy-num">2</div>
+      <div style="color:rgba(255,255,255,.75);font-size:13px">前往 <a href="https://netlify.com/drop" target="_blank" style="color:var(--gd);font-weight:700">netlify.com/drop</a>，把這個 HTML 檔案拖進去，立即獲得專屬網址</div>
+    </div>
+    <div class="deploy-step" style="margin-bottom:0">
+      <div class="deploy-num">3</div>
+      <div style="color:rgba(255,255,255,.75);font-size:13px">分享網址給客人，他們打開後直接看到客戶版目錄，無法進入管理介面。管理介面需在網址後加 <code style="background:rgba(255,255,255,.1);padding:1px 6px;border-radius:4px;font-size:11px">?admin</code> 才能進入</div>
+    </div>
+    <button onclick="document.getElementById('deployBanner').style.display='none'" style="margin-top:14px;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.5);padding:5px 14px;border-radius:8px;font-size:11px;cursor:pointer">知道了，收起說明</button>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+    <div style="font-size:25px;font-weight:700;color:var(--ink)" id="ahtitle">商品目錄</div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap">
+      <div class="stile"><div class="slbl" id="sca">作品數量</div><div class="sval" id="scnt">0</div></div>
+      <div class="stile"><div class="slbl" id="sab">藝術家</div><div class="sval" id="sart">0</div></div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:16px;flex-wrap:wrap">
+    <div class="sb"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="srch" placeholder="搜尋…" oninput="renderAdmin()"></div>
+    <div style="display:flex;gap:3px;flex-wrap:wrap">
+      <button class="btn bsm bgh" id="s0" onclick="setSort('def',this)">預設</button>
+      <button class="btn bsm bgh" id="s1" onclick="setSort('p↑',this)">價格↑</button>
+      <button class="btn bsm bgh" id="s2" onclick="setSort('p↓',this)">價格↓</button>
+      <button class="btn bsm bgh" id="s3" onclick="setSort('a↑',this)">A→Z</button>
+      <button class="btn bsm bgh" id="s4" onclick="setSort('a↓',this)">Z→A</button>
+    </div>
+  </div>
+
+  <div class="pg em-on" id="agrid"></div>
+  <hr>
+
+  <!-- BANK (always visible to admin) -->
+  <div style="margin-bottom:20px">
+    <div class="bank">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:8px">
+        <div style="font-size:13px;font-weight:700;letter-spacing:.07em;color:var(--gd)" id="bkttl">匯款資訊</div>
+        <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.28);letter-spacing:.1em">moro young</div>
+      </div>
+      <div class="bkgrid">
+        <div><div class="bfl" id="blbank">銀行名稱</div><div class="bfv">E.Sun Commercial Bank, Ltd., Taipei, Taiwan</div></div>
+        <div><div class="bfl" id="blbr">分行</div><div class="bfv">Hsinchu Branch</div></div>
+        <div><div class="bfl">SWIFT Code</div><div class="bfv">ESUNTWTP</div></div>
+        <div><div class="bfl" id="blbene">受益人</div><div class="bfv">YENCHEN LIU</div></div>
+        <div style="grid-column:1/-1"><div class="bfl" id="blacct">帳號</div><div class="bacct">0060979366825</div></div>
+      </div>
+      <div class="bcon"><span>(+886) 905 025 802</span><span>liuyen.c4@gmail.com</span><span><a href="https://moroyoung.com/" target="_blank">moroyoung.com</a></span></div>
+    </div>
+  </div>
+
+  <!-- EXPORT -->
+  <div class="exps" id="expsec" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div><div style="font-size:15px;font-weight:700;color:var(--ink)">分享給客戶</div><div style="font-size:11px;color:var(--i3)">客人打開連結直接看到客戶版，無法進入管理模式</div></div>
+      <button class="bico" onclick="hideExport()">✕</button>
+    </div>
+    <div class="expg">
+      <div class="expc" onclick="copyClientLink()">
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px">📋 複製連結</div>
+        <div style="font-size:11px;color:var(--i3)">客人打開直接看客戶版</div>
+      </div>
+      <div class="expc" onclick="exportHTML()">
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px">⬇ 下載 HTML</div>
+        <div style="font-size:11px;color:var(--i3)">獨立網頁，可寄送</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:12px 14px;background:var(--aml);border-radius:11px;font-size:12px;color:var(--am);font-weight:600;border:1px solid #fde68a">
+      ⚡ 最佳體驗：先完成雲端設定 + 上架 Netlify，之後每次修改作品，客人刷新頁面即可看到最新資料
+    </div>
+  </div>
+
+  <footer style="text-align:center;padding:24px 0 0;font-size:11px;color:var(--i3)">moro young © 2025 · Independent Art Publishing · <a href="?admin" style="color:var(--i3)">管理介面</a></footer>
+</div>
+</div><!-- /adminPage -->
+
+<!-- ═══ CLIENT PAGE (default for visitors) ═══ -->
+<div id="clientPage" style="display:none">
+<header class="topbar">
+  <div class="brand">moro young</div>
+  <div class="tr">
+    <div class="lg-grp">
+      <button class="lb active" onclick="setLang('zh',this)">繁中</button>
+      <button class="lb" onclick="setLang('en',this)">EN</button>
+      <button class="lb" onclick="setLang('ja',this)">日本語</button>
+      <button class="lb" onclick="setLang('ko',this)">한국어</button>
+    </div>
+  </div>
+</header>
+<div class="disc">
+  <div class="disc-bd" id="discbd" style="max-height:200px">
+    <div class="disc-in">
+      <div class="disc-ttl" id="discttl">以下資訊供書店、合作夥伴、機構使用</div>
+      <div class="disc-txt" id="disctxt"></div>
+    </div>
+  </div>
+  <button class="disc-tog" onclick="togDisc()"><span id="disctog">▲ 收起</span><span style="color:rgba(255,255,255,.18);font-size:10px">moro young © 2025</span></button>
+</div>
+<div class="pw">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+    <div style="font-size:25px;font-weight:700;color:var(--ink)" id="chtitle">商品目錄</div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap">
+      <div class="stile"><div class="slbl" id="csca">作品數量</div><div class="sval" id="cscnt">0</div></div>
+      <div class="stile"><div class="slbl" id="csab">藝術家</div><div class="sval" id="csart">0</div></div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:16px;flex-wrap:wrap">
+    <div class="sb"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="csrch" placeholder="搜尋…" oninput="renderClient()"></div>
+    <div style="display:flex;gap:3px;flex-wrap:wrap">
+      <button class="btn bsm bgh" id="cs0" onclick="setClientSort('def',this)">預設</button>
+      <button class="btn bsm bgh" id="cs1" onclick="setClientSort('p↑',this)">價格↑</button>
+      <button class="btn bsm bgh" id="cs2" onclick="setClientSort('p↓',this)">價格↓</button>
+      <button class="btn bsm bgh" id="cs3" onclick="setClientSort('a↑',this)">A→Z</button>
+      <button class="btn bsm bgh" id="cs4" onclick="setClientSort('a↓',this)">Z→A</button>
+    </div>
+  </div>
+  <!-- LOADING STATE -->
+  <div class="loading-state" id="clientLoading">
+    <div class="spin"></div>
+    <div style="font-size:13px;color:var(--i3)">載入作品資料中…</div>
+  </div>
+  <div class="pg" id="cgrid" style="display:none"></div>
+  <div id="cbank" style="margin-top:20px"></div>
+  <footer style="text-align:center;padding:24px 0;font-size:11px;color:var(--i3)">moro young © 2025 · Independent Art Publishing</footer>
+</div>
+</div><!-- /clientPage -->
+
+<script>
+/* ═══ DATA & STATE ═══ */
+var DA=[
+  {id:1,title:'Map of the Public Toilet',author:'ChengLin Tsai',price:{TWD:280,USD:8,JPY:1200,KRW:11000},wsPct:70,wsFixed:'',photo:'',driveFolder:'',intro:'A cartographic zine exploring public restrooms as urban social spaces.',authorBio:'蔡政霖，台灣獨立藝術家，以城市空間與日常觀察為創作核心。',hashtags:['#zine','#當代藝術'],social:'@moroyoung',i18n:{}},
+  {id:2,title:'Love Motel',author:'ChengLin Tsai',price:{TWD:400,USD:12,JPY:1700,KRW:16000},wsPct:70,wsFixed:'',photo:'',driveFolder:'',intro:"Visual study of Taiwan's love motel culture.",authorBio:'蔡政霖，台灣獨立藝術家，以城市空間與日常觀察為創作核心。',hashtags:['#zine','#台灣'],social:'@moroyoung',i18n:{}},
+  {id:3,title:'Running Sketch No.1–5',author:'Yenchen Liu',price:{TWD:360,USD:11,JPY:1550,KRW:14500},wsPct:70,wsFixed:'',photo:'',driveFolder:'',intro:'Sketching series capturing motion in daily life.',authorBio:'劉彥琛，moro young 創辦人，專注獨立出版與插畫創作。',hashtags:['#sketch','#插畫'],social:'@moroyoung',i18n:{}},
+  {id:4,title:'Running Sketch No.6–10',author:'Yenchen Liu',price:{TWD:360,USD:11,JPY:1550,KRW:14500},wsPct:70,wsFixed:'',photo:'',driveFolder:'',intro:'Running Sketch volumes 6–10.',authorBio:'劉彥琛，moro young 創辦人，專注獨立出版與插畫創作。',hashtags:['#sketch','#插畫'],social:'@moroyoung',i18n:{}},
+  {id:5,title:'Running Sketch No.11–15',author:'Yenchen Liu',price:{TWD:360,USD:11,JPY:1550,KRW:14500},wsPct:70,wsFixed:'',photo:'',driveFolder:'',intro:'Running Sketch volumes 11–15.',authorBio:'劉彥琛，moro young 創辦人，專注獨立出版與插畫創作。',hashtags:['#sketch'],social:'@moroyoung',i18n:{}},
+  {id:6,title:'I Hate This!',author:'Tammy Wang',price:{TWD:680,USD:20,JPY:2900,KRW:27000},wsPct:70,wsFixed:'',photo:'',driveFolder:'',intro:'Bold expressive zine channeling frustration into graphic art.',authorBio:'Tammy Wang，平面設計師與視覺藝術家。',hashtags:['#zine','#graphic'],social:'@tammywang',i18n:{}},
+  {id:7,title:'Journey through the Hell Sticker Set',author:'MRTOAD',price:{TWD:180,USD:5.5,JPY:780,KRW:7200},wsPct:70,wsFixed:'',photo:'',driveFolder:'',intro:'Illustrated stickers with mythological underworld scenes.',authorBio:'MRTOAD，插畫師，以民間神話與地下文化為靈感。',hashtags:['#sticker','#illustration'],social:'@mrtoad',i18n:{}},
+  {id:8,title:'Sorry for Being Cute Acrylic Keychain',author:'Yenchen Liu',price:{TWD:170,USD:5,JPY:730,KRW:6800},wsPct:70,wsFixed:'',photo:'',driveFolder:'',intro:'Limited edition acrylic keychain with original illustration.',authorBio:'劉彥琛，moro young 創辦人，專注獨立出版與插畫創作。',hashtags:['#keychain','#周邊'],social:'@moroyoung',i18n:{}}
+];
+var arts=JSON.parse(JSON.stringify(DA));
+var sel={};arts.forEach(function(a){sel[a.id]=true;});
+var lang='zh',showBank=false,showWs=false,showPrice=true;
+var sortM='def',cSortM='def',eid=null,cphoto='',ctags=[],nid=9,discOpen=true;
+var ckey='',cbid='',cloud=false,saveT=null;
+var LSKEY='mory6';
+var isAdmin=new URLSearchParams(location.search).has('admin');
+
+/* ═══ LANG ═══ */
+var L={
+  zh:{sym:'NT$',k:'TWD',cur:'TWD',hero:'商品目錄',sca:'作品數量',sab:'藝術家',expbtn:'匯出 / 分享',addbtn:'+ 新增作品',sall:'全選',snone:'全不選',bktog:'匯款資訊顯示給客戶',wstog:'顯示批發價',ptog:'顯示售價給客戶',bkttl:'匯款資訊',blbank:'銀行名稱',blbr:'分行',blbene:'受益人',blacct:'帳號',wsL:'批發價',addT:'新增作品',editT:'編輯作品',cancel:'取消',save:'儲存',wspl:'批發價',wsml:'毛利',let:'作品名稱',lea:'藝術家',leab:'藝術家介紹',lep:'售價（TWD）',lews:'批發價設定',lei:'作品介紹',les:'社群 / 官網',discT:'以下資訊供書店、合作夥伴、機構使用',discTxt:'歡迎作於上架使用、社群媒體宣傳等。請勿將此網站連結傳送至非相關人士。',discCon:'(+886) 905 025 802 &nbsp;·&nbsp; liuyen.c4@gmail.com &nbsp;·&nbsp; <a href="https://moroyoung.com" target="_blank">moroyoung.com</a>',col:'▲ 收起',exp:'▼ 展開',drvT:'作品圖片 · 供下載使用',drvD:'點擊按鈕開啟 Google Drive 資料夾，下載高解析度原始檔',drvB:'↓ 下載作品圖片',csynced:'已同步',csaving:'同步中…',cerr:'同步失敗',coff:'設定雲端',bioL:'藝術家介紹'},
+  en:{sym:'$',k:'USD',cur:'USD',hero:'Products Catalog',sca:'Artworks',sab:'Artists',expbtn:'Share',addbtn:'+ Add Artwork',sall:'Select All',snone:'Deselect All',bktog:'Show Bank Info',wstog:'Show Wholesale',ptog:'Show Price',bkttl:'Transfer Info',blbank:'Bank Name',blbr:'Branch',blbene:'Beneficiary',blacct:'Account',wsL:'Wholesale',addT:'Add Artwork',editT:'Edit Artwork',cancel:'Cancel',save:'Save',wspl:'Wholesale',wsml:'Margin',let:'Title',lea:'Artist',leab:'Artist Bio',lep:'Price (TWD)',lews:'Wholesale Price',lei:'Description',les:'Social / Website',discT:'For Bookstores, Partners & Institutions',discTxt:'For listings, social media, etc. Do not share this link with unrelated parties.',discCon:'(+886) 905 025 802 &nbsp;·&nbsp; liuyen.c4@gmail.com &nbsp;·&nbsp; <a href="https://moroyoung.com" target="_blank">moroyoung.com</a>',col:'▲ Collapse',exp:'▼ Expand',drvT:'Artwork Image · Download',drvD:'Open Google Drive folder to download the high-res file.',drvB:'↓ Download Image',csynced:'Synced',csaving:'Syncing…',cerr:'Sync failed',coff:'Setup Cloud',bioL:'Artist Bio'},
+  ja:{sym:'¥',k:'JPY',cur:'JPY',hero:'商品カタログ',sca:'作品数',sab:'アーティスト',expbtn:'共有',addbtn:'+ 作品追加',sall:'全選択',snone:'全解除',bktog:'振込情報を表示',wstog:'卸売価格を表示',ptog:'価格を表示',bkttl:'振込情報',blbank:'銀行名',blbr:'支店名',blbene:'受取人',blacct:'口座番号',wsL:'卸売',addT:'作品を追加',editT:'作品を編集',cancel:'キャンセル',save:'保存',wspl:'卸売価格',wsml:'利益',let:'タイトル',lea:'アーティスト',leab:'アーティスト紹介',lep:'価格（TWD）',lews:'卸売価格設定',lei:'作品紹介',les:'SNS / ウェブサイト',discT:'書店・パートナー・機関向け情報',discTxt:'上場・SNSプロモーションなどにご利用いただけます。無関係な方へのリンク共有はご遠慮ください。',discCon:'(+886) 905 025 802 &nbsp;·&nbsp; liuyen.c4@gmail.com &nbsp;·&nbsp; <a href="https://moroyoung.com" target="_blank">moroyoung.com</a>',col:'▲ 閉じる',exp:'▼ 開く',drvT:'作品画像 · ダウンロード',drvD:'Google Driveフォルダを開いて高解像度ファイルをダウンロード',drvB:'↓ 画像をダウンロード',csynced:'同期済み',csaving:'同期中…',cerr:'同期失敗',coff:'クラウド設定',bioL:'アーティスト紹介'},
+  ko:{sym:'₩',k:'KRW',cur:'KRW',hero:'상품 카탈로그',sca:'작품 수',sab:'아티스트',expbtn:'공유',addbtn:'+ 작품 추가',sall:'전체 선택',snone:'전체 해제',bktog:'고객에게 송금 정보 표시',wstog:'도매가 표시',ptog:'가격 표시',bkttl:'송금 정보',blbank:'은행명',blbr:'지점명',blbene:'수취인',blacct:'계좌번호',wsL:'도매가',addT:'작품 추가',editT:'작품 편집',cancel:'취소',save:'저장',wspl:'도매가',wsml:'마진',let:'작품 제목',lea:'아티스트',leab:'아티스트 소개',lep:'가격（TWD）',lews:'도매가 설정',lei:'작품 소개',les:'SNS / 웹사이트',discT:'서점, 파트너, 기관을 위한 정보',discTxt:'입점, SNS 홍보 등에 활용하실 수 있습니다. 관련 없는 분께 링크를 공유하지 마세요.',discCon:'(+886) 905 025 802 &nbsp;·&nbsp; liuyen.c4@gmail.com &nbsp;·&nbsp; <a href="https://moroyoung.com" target="_blank">moroyoung.com</a>',col:'▲ 접기',exp:'▼ 펼치기',drvT:'작품 이미지 · 다운로드',drvD:'Google Drive 폴더를 열어 고해상도 원본 파일을 다운로드하세요.',drvB:'↓ 이미지 다운로드',csynced:'동기화 완료',csaving:'동기화 중…',cerr:'동기화 실패',coff:'클라우드 설정',bioL:'아티스트 소개'}
+};
+function t(k){return L[lang][k]||k;}
+function fp(v,l){var x=L[l||lang],n=Number(v);if(isNaN(n))return'—';return x.k==='USD'?x.sym+n.toFixed(2):x.sym+Math.round(n).toLocaleString();}
+function gws(a,l){l=l||lang;if(a.wsFixed&&Number(a.wsFixed)>0)return Number(a.wsFixed);return Math.round((a.price[L[l].k]||0)*(a.wsPct||70)/100);}
+function gloc(a,f,l){l=l||lang;if(l==='zh')return a[f]||'';if(a.i18n&&a.i18n[l]&&a.i18n[l][f])return a.i18n[l][f];return a[f]||'';}
+function se(id,v){var e=document.getElementById(id);if(e&&v!==undefined)e.textContent=v;}
+function sh(id,v){var e=document.getElementById(id);if(e&&v!==undefined)e.innerHTML=v;}
+function ntf(msg,type){var n=document.getElementById('ntf');n.textContent=msg;n.className='ntf '+(type||'')+' show';setTimeout(function(){n.className='ntf';},3000);}
+
+/* ═══ CLOUD ═══ */
+var BB='https://api.jsonbin.io/v3/b';
+function setCUI(s){
+  var d=document.getElementById('cdot'),tx=document.getElementById('ctxt');
+  if(!d)return;
+  d.className='cdot'+(s==='on'?' on':s==='saving'?' saving':s==='err'?' err':'');
+  var m={on:t('csynced'),saving:t('csaving'),err:t('cerr'),off:t('coff')};
+  if(tx)tx.textContent=m[s]||t('coff');
+}
+async function cloudLoad(silent){
+  if(!cloud||!cbid)return false;
+  if(!silent)setCUI('saving');
+  try{
+    var r=await fetch(BB+'/'+cbid+'/latest',{headers:{'X-Master-Key':ckey,'X-Bin-Meta':'false'}});
+    if(!r.ok)throw new Error(r.status);
+    var d=await r.json(),rec=d.record||d;
+    if(rec.arts&&rec.arts.length){arts=rec.arts;arts.forEach(function(a){if(!a.i18n)a.i18n={};if(!a.driveFolder)a.driveFolder='';if(!a.authorBio)a.authorBio='';});nid=Math.max.apply(null,arts.map(function(a){return a.id;}))+1;}
+    if(rec.sel)sel=rec.sel;
+    if(rec.cfg){showBank=!!rec.cfg.bank;showWs=!!rec.cfg.ws;showPrice=rec.cfg.price!==undefined?!!rec.cfg.price:true;}
+    applyTogs();
+    setCUI('on');
+    return true;
+  }catch(e){setCUI('err');return false;}
+}
+function schedSave(){clearTimeout(saveT);setCUI('saving');saveT=setTimeout(doSave,1200);}
+async function doSave(){
+  if(!cloud||!cbid){saveLocal();return;}
+  try{
+    var r=await fetch(BB+'/'+cbid,{method:'PUT',headers:{'X-Master-Key':ckey,'Content-Type':'application/json'},body:JSON.stringify({arts:arts,sel:sel,cfg:{bank:showBank,ws:showWs,price:showPrice}})});
+    if(!r.ok)throw new Error(r.status);
+    saveLocal();setCUI('on');
+  }catch(e){setCUI('err');ntf(t('cerr'));}
+}
+function saveLocal(){try{localStorage.setItem(LSKEY,JSON.stringify({arts:arts,sel:sel,cfg:{bank:showBank,ws:showWs,price:showPrice},nid:nid,ckey:ckey,cbid:cbid,cloud:cloud}));}catch(e){}}
+function loadLocal(){
+  try{
+    var r=localStorage.getItem(LSKEY);if(!r)return false;
+    var d=JSON.parse(r);
+    if(d.arts&&d.arts.length){arts=d.arts;arts.forEach(function(a){if(!a.i18n)a.i18n={};if(!a.driveFolder)a.driveFolder='';if(!a.authorBio)a.authorBio='';});}
+    if(d.sel)sel=d.sel;
+    if(d.cfg){showBank=!!d.cfg.bank;showWs=!!d.cfg.ws;showPrice=d.cfg.price!==undefined?!!d.cfg.price:true;}
+    if(d.nid)nid=d.nid;
+    if(d.ckey)ckey=d.ckey;if(d.cbid)cbid=d.cbid;if(d.cloud!==undefined)cloud=!!d.cloud;
+    return true;
+  }catch(e){return false;}
+}
+
+/* ═══ SETUP ═══ */
+function openSetup(){
+  document.getElementById('sk').value=ckey||'$2a$10$uLsDs1gHBJd7AfYbMvaXvuG3B429kuvaFOhdhqGxF7hftTZmJX9H.';
+  document.getElementById('sbid').value=cbid||'';
+  document.getElementById('serr').style.display='none';
+  document.getElementById('sov').style.display='flex';
+}
+function closeSetup(){document.getElementById('sov').style.display='none';}
+async function connectCloud(){
+  var k=document.getElementById('sk').value.trim();
+  var bid=document.getElementById('sbid').value.trim()||cbid;
+  var err=document.getElementById('serr');err.style.display='none';
+  if(!k||k.length<20){err.textContent='請輸入正確的 Master Key';err.style.display='block';return;}
+  var btn=document.querySelector('#sov .bgr');btn.textContent='連線中…';btn.disabled=true;
+  try{
+    if(!bid){
+      var cr=await fetch(BB,{method:'POST',headers:{'X-Master-Key':k,'Content-Type':'application/json','X-Bin-Name':'moroyoung','X-Bin-Private':'false'},body:JSON.stringify({arts:arts,sel:sel,cfg:{bank:showBank,ws:showWs,price:showPrice}})});
+      if(!cr.ok){var eb='';try{eb=await cr.text();}catch(x){}throw new Error('建立失敗 ('+cr.status+')\n'+eb+'\n請確認 Master Key 正確且已驗證 Email');}
+      var cd=await cr.json();bid=(cd.metadata&&cd.metadata.id)||cd.id;
+      if(!bid)throw new Error('未取得 Bin ID，請重試');
+    }
+    var rr=await fetch(BB+'/'+bid+'/latest',{headers:{'X-Master-Key':k,'X-Bin-Meta':'false'}});
+    if(!rr.ok){var rb='';try{rb=await rr.text();}catch(x){}throw new Error('讀取失敗 ('+rr.status+')\n'+rb);}
+    ckey=k;cbid=bid;cloud=true;
+    document.getElementById('sbid').value=bid;
+    saveLocal();closeSetup();setCUI('on');
+    ntf('☁️ 雲端同步已啟用！Bin ID: '+bid,'gr');
+    await cloudLoad(true);renderAdmin();
+  }catch(e){err.style.whiteSpace='pre-wrap';err.textContent='連線失敗：'+e.message;err.style.display='block';}
+  finally{btn.textContent='✓ 連線並同步';btn.disabled=false;}
+}
+
+/* ═══ LANG ═══ */
+function setLang(l,btn){
+  lang=l;document.querySelectorAll('.lb').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');document.body.className='lang-'+l;
+  applyLang();
+  if(isAdmin)renderAdmin();else renderClient();
+}
+function applyLang(){
+  var x=L[lang];
+  se('ahtitle',x.hero);se('chtitle',x.hero);
+  se('sca',x.sca);se('sab',x.sab);se('csca',x.sca);se('csab',x.sab);
+  se('explbl',x.expbtn);se('badd',x.addbtn);se('bsela',x.sall);se('bseln',x.snone);
+  se('lblbank',x.bktog);se('lblws',x.wstog);se('lblprice',x.ptog);
+  se('bkttl',x.bkttl);se('blbank',x.blbank);se('blbr',x.blbr);se('blbene',x.blbene);se('blacct',x.blacct);
+  se('emttl',eid!==null?x.editT:x.addT);se('btnc',x.cancel);se('btns',x.save);
+  se('wspl',x.wspl);se('wsml',x.wsml);se('let',x.let);se('lea',x.lea);se('leab',x.leab);
+  se('lep',x.lep);se('lews',x.lews);se('lei',x.lei);se('les',x.les);
+  se('discttl',x.discT);
+  sh('disctxt',x.discTxt+'<br><span style="display:inline-block;margin-top:4px">'+x.discCon+'</span>');
+  se('disctog',discOpen?x.col:x.exp);
+  setCUI(cloud?'on':'off');
+}
+function togDisc(){discOpen=!discOpen;document.getElementById('discbd').style.maxHeight=discOpen?'200px':'0';se('disctog',discOpen?t('col'):t('exp'));}
+
+/* ═══ ADMIN TOGGLES ═══ */
+function applyTogs(){
+  document.getElementById('togbank').classList.toggle('on',showBank);
+  document.getElementById('togws').classList.toggle('on',showWs);
+  document.getElementById('togprice').classList.toggle('on',showPrice);
+}
+function togBank(){showBank=!showBank;document.getElementById('togbank').classList.toggle('on',showBank);schedSave();}
+function togWs(){showWs=!showWs;document.getElementById('togws').classList.toggle('on',showWs);renderAdmin();}
+function togPrice(){showPrice=!showPrice;document.getElementById('togprice').classList.toggle('on',showPrice);renderAdmin();}
+function selAll(){arts.forEach(function(a){sel[a.id]=true;});renderAdmin();schedSave();}
+function selNone(){arts.forEach(function(a){sel[a.id]=false;});renderAdmin();schedSave();}
+function togSel(id,v){sel[id]=v;var c=document.getElementById('pc'+id);if(c)c.classList.toggle('dim',!v);schedSave();}
+
+/* ═══ SORT ═══ */
+function setSort(m,btn){sortM=m;document.querySelectorAll('[id^=s]').forEach(function(b){if(/^s\d$/.test(b.id)){b.classList.remove('bink');b.classList.add('bgh');}});if(btn){btn.classList.remove('bgh');btn.classList.add('bink');}renderAdmin();}
+function setClientSort(m,btn){cSortM=m;document.querySelectorAll('[id^=cs]').forEach(function(b){if(/^cs\d$/.test(b.id)){b.classList.remove('bink');b.classList.add('bgh');}});if(btn){btn.classList.remove('bgh');btn.classList.add('bink');}renderClient();}
+function sortList(list,mode){
+  if(mode==='p↑')list.sort(function(a,b){return(a.price[L[lang].k]||0)-(b.price[L[lang].k]||0);});
+  else if(mode==='p↓')list.sort(function(a,b){return(b.price[L[lang].k]||0)-(a.price[L[lang].k]||0);});
+  else if(mode==='a↑')list.sort(function(a,b){return gloc(a,'title').localeCompare(gloc(b,'title'));});
+  else if(mode==='a↓')list.sort(function(a,b){return gloc(b,'title').localeCompare(gloc(a,'title'));});
+  return list;
+}
+
+/* ═══ CARD HTML ═══ */
+function imgH(photo){
+  if(!photo)return'<div class="piph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>';
+  return'<img class="pimg" src="'+photo+'" onerror="imgFail(this)">';
+}
+function cardBody(a,p,ws,adminView){
+  var title=gloc(a,'title');
+  var badge='';
+  if(adminView&&lang!=='zh'){var hi=a.i18n&&a.i18n[lang]&&a.i18n[lang].title;badge=hi?(a.i18n[lang].manual?'<span style="display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;background:var(--grl);color:var(--gr);margin-left:5px">手動</span>':'<span style="display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;background:var(--bll);color:var(--bl);margin-left:5px">AI</span>'):'<span style="display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;background:var(--aml);color:var(--am);margin-left:5px">未譯</span>';}
+  var prH=adminView?'<span class="ppr">'+fp(p)+'<span class="ppr-c"> '+L[lang].cur+'</span></span>':'';
+  var wsH=adminView?'<span class="pws">'+t('wsL')+' '+fp(ws)+'</span>':'';
+  var tagsH=a.hashtags&&a.hashtags.length?'<div class="ptags">'+a.hashtags.map(function(tg){return'<span style="display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700;background:var(--bg);color:var(--i2)">'+tg+'</span>';}).join('')+'</div>':'';
+  var drvH=a.driveFolder?'<div class="pdrv"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'+t('drvB')+'</div>':'';
+  return'<div class="pb"><div class="ptitle">'+title+badge+'</div><div class="pauth">'+a.author+'</div>'
+    +'<div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-top:2px">'+prH+wsH+'</div>'
+    +tagsH+drvH+'</div>';
+}
+
+/* ═══ RENDER ADMIN ═══ */
+function renderAdmin(){
+  var q=(document.getElementById('srch').value||'').toLowerCase();
+  var list=arts.slice();
+  if(q)list=list.filter(function(a){return gloc(a,'title').toLowerCase().includes(q)||a.author.toLowerCase().includes(q);});
+  sortList(list,sortM);
+  var grid=document.getElementById('agrid');
+  if(!list.length){grid.innerHTML='<div style="text-align:center;padding:44px;color:var(--i3)"><div style="font-size:32px;margin-bottom:10px">🎨</div><div style="font-size:13px;font-weight:600;color:var(--i2)">點擊「+ 新增作品」開始</div></div>';updateStats();return;}
+  grid.innerHTML=list.map(function(a,i){
+    var isSel=sel[a.id],p=a.price[L[lang].k]||0,ws=gws(a);
+    return'<div class="pc fu'+((!isSel)?' dim':'')+'" id="pc'+a.id+'" onclick="openDet('+a.id+')" style="animation-delay:'+(i*0.04)+'s">'
+      +'<div class="pchk" onclick="event.stopPropagation()"><input type="checkbox" '+(isSel?'checked':'')+' onchange="togSel('+a.id+',this.checked)"></div>'
+      +'<div class="pnum">'+(a.id<10?'0'+a.id:a.id)+'</div>'
+      +imgH(a.photo)+cardBody(a,p,ws,true)
+      +'<div class="pedit"><button class="btn bsm bgh" style="flex:1" onclick="event.stopPropagation();openEdit('+a.id+')">編輯</button>'
+      +'<button class="bico d" onclick="event.stopPropagation();delArt('+a.id+')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14a2,2,0,0,1-2,2H8a2,2,0,0,1-2-2L5,6"/></svg></button></div>'
+      +'</div>';
+  }).join('');
+  updateStats();
+}
+
+/* ═══ RENDER CLIENT ═══ */
+function renderClient(){
+  var q=(document.getElementById('csrch').value||'').toLowerCase();
+  var visible=arts.filter(function(a){return sel[a.id]&&(!q||(gloc(a,'title').toLowerCase().includes(q)||a.author.toLowerCase().includes(q)));});
+  sortList(visible,cSortM);
+  var grid=document.getElementById('cgrid');
+  grid.innerHTML=visible.map(function(a,i){
+    var p=a.price[L[lang].k]||0,ws=gws(a);
+    return'<div class="pc fu" style="animation-delay:'+(i*0.04)+'s" onclick="openDet('+a.id+')">'
+      +'<div class="pnum">'+(a.id<10?'0'+a.id:a.id)+'</div>'
+      +imgH(a.photo)+cardBody(a,p,ws,false)+'</div>';
+  }).join('');
+  se('cscnt',visible.length);
+  var aa=[];visible.forEach(function(a){if(!aa.includes(a.author))aa.push(a.author);});
+  se('csart',aa.length);
+  document.getElementById('cbank').innerHTML=showBank?buildBank():'';
+}
+function updateStats(){
+  var aa=[];arts.forEach(function(a){if(!aa.includes(a.author))aa.push(a.author);});
+  se('scnt',arts.length);se('sart',aa.length);
+}
+
+/* ═══ DETAIL MODAL ═══ */
+function openDet(id){
+  var a=arts.find(function(x){return x.id===id;});if(!a)return;
+  var iw=document.getElementById('dimgwrap');
+  iw.innerHTML=a.photo?'<img class="dimg" src="'+a.photo+'" onerror="this.parentNode.innerHTML=\'\'">':'';
+  se('dtitle',gloc(a,'title'));se('dauthor',a.author);
+  var bw=document.getElementById('dbiowrap');
+  if(a.authorBio){bw.style.display='block';se('dbiolvl',t('bioL'));se('dbio',a.authorBio);}else bw.style.display='none';
+  document.getElementById('dpricewrap').style.display=isAdmin?'':'none';
+  se('dprice',fp(a.price[L[lang].k]||0)+' '+L[lang].cur);
+  se('dws',isAdmin?t('wsL')+': '+fp(gws(a)):'');
+  se('dintro',gloc(a,'intro')||'');
+  document.getElementById('dtags').innerHTML=(a.hashtags||[]).map(function(tg){return'<span style="display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700;background:var(--bg);color:var(--i2)">'+tg+'</span>';}).join('');
+  se('dsoc',a.social||'');
+  var db=document.getElementById('ddrvbox');
+  if(a.driveFolder){db.style.display='block';se('ddrvttl',t('drvT'));se('ddrvdesc',t('drvD'));var btn=document.getElementById('ddrvbtn');btn.href=a.driveFolder;btn.textContent=t('drvB');}else db.style.display='none';
+  document.getElementById('dov').style.display='flex';
+}
+function closeDet(){document.getElementById('dov').style.display='none';}
+
+/* ═══ EDIT ═══ */
+function buildAuthorList(){var dl=document.getElementById('alist'),seen={},opts='';arts.forEach(function(a){if(a.author&&!seen[a.author]){seen[a.author]=1;opts+='<option value="'+a.author+'">';}});dl.innerHTML=opts;}
+function onAuthInput(){var v=document.getElementById('eauthor').value,m=arts.find(function(a){return a.author===v;});if(m&&m.authorBio&&!document.getElementById('eabio').value)document.getElementById('eabio').value=m.authorBio;}
+function openAdd(){
+  eid=null;cphoto='';ctags=[];
+  ['etitle','eauthor','eabio','eprice','eintro','esoc','edrv'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('ewspct').value='70';document.getElementById('ewsd').value='';
+  document.getElementById('uppreview').innerHTML='';document.getElementById('uphint').style.display='flex';
+  document.getElementById('clrph').style.display='none';
+  se('wspv','—');se('wsmv','—');se('emttl',t('addT'));buildAuthorList();renderTags();
+  document.getElementById('eov').style.display='flex';
+}
+function openEdit(id){
+  var a=arts.find(function(x){return x.id===id;});if(!a)return;
+  eid=id;cphoto=a.photo||'';ctags=(a.hashtags||[]).slice();
+  var i18=lang!=='zh'&&a.i18n&&a.i18n[lang]?a.i18n[lang]:null;
+  document.getElementById('etitle').value=(i18&&i18.title)||a.title||'';
+  document.getElementById('eintro').value=(i18&&i18.intro)||a.intro||'';
+  document.getElementById('eabio').value=a.authorBio||'';
+  document.getElementById('eauthor').value=a.author||'';
+  document.getElementById('eprice').value=a.price[L[lang].k]||'';
+  document.getElementById('ewspct').value=a.wsPct||70;
+  document.getElementById('ewsd').value=a.wsFixed||'';
+  document.getElementById('esoc').value=a.social||'';
+  document.getElementById('edrv').value=a.driveFolder||'';
+  var upr=document.getElementById('uppreview'),uph=document.getElementById('uphint');
+  if(cphoto){upr.innerHTML='<img src="'+cphoto+'">';uph.style.display='none';document.getElementById('clrph').style.display='block';}
+  else{upr.innerHTML='';uph.style.display='flex';document.getElementById('clrph').style.display='none';}
+  renderTags();updateWs();buildAuthorList();se('emttl',t('editT'));
+  document.getElementById('eov').style.display='flex';
+}
+function closeEdit(){document.getElementById('eov').style.display='none';eid=null;}
+function saveArtwork(){
+  var title=document.getElementById('etitle').value.trim(),author=document.getElementById('eauthor').value.trim(),
+      authorBio=document.getElementById('eabio').value.trim(),intro=document.getElementById('eintro').value.trim(),
+      priceVal=Number(document.getElementById('eprice').value)||0,driveFolder=document.getElementById('edrv').value.trim();
+  if(!title){ntf('請輸入作品名稱');return;}
+  if(eid!==null){
+    var a=arts.find(function(x){return x.id===eid;});if(!a)return;
+    var retrans=false;
+    if(lang==='zh'){retrans=a.title!==title||a.intro!==intro;a.title=title;a.intro=intro;}
+    else{if(!a.i18n)a.i18n={};a.i18n[lang]={title:title,intro:intro,manual:true};}
+    a.author=author;a.authorBio=authorBio;a.price[L[lang].k]=priceVal;
+    a.wsPct=Number(document.getElementById('ewspct').value)||70;a.wsFixed=document.getElementById('ewsd').value;
+    a.social=document.getElementById('esoc').value;a.hashtags=ctags.slice();a.photo=cphoto;a.driveFolder=driveFolder;
+    closeEdit();renderAdmin();schedSave();ntf(t('save')+' ✓','gr');
+    if(lang==='zh'&&retrans)transArt(a);
+  }else{
+    var nx={id:nid++,title:title,author:author,authorBio:authorBio,
+      price:{TWD:priceVal,USD:Math.round(priceVal/32),JPY:Math.round(priceVal*4.5),KRW:Math.round(priceVal*40)},
+      wsPct:Number(document.getElementById('ewspct').value)||70,wsFixed:document.getElementById('ewsd').value,
+      photo:cphoto,driveFolder:driveFolder,intro:intro,hashtags:ctags.slice(),social:document.getElementById('esoc').value,i18n:{}};
+    if(L[lang].k!=='TWD')nx.price[L[lang].k]=priceVal;
+    if(lang!=='zh')nx.i18n[lang]={title:title,intro:intro,manual:true};
+    arts.push(nx);sel[nx.id]=true;
+    closeEdit();renderAdmin();schedSave();ntf(t('save')+' ✓','gr');
+    if(lang==='zh')transArt(nx);
+  }
+}
+function delArt(id){if(!confirm('確定要刪除這件作品？'))return;arts=arts.filter(function(a){return a.id!==id;});delete sel[id];renderAdmin();schedSave();}
+function updateWs(){
+  var p=Number(document.getElementById('eprice').value)||0,pct=Number(document.getElementById('ewspct').value)||70;
+  if(p>0){se('wspv',fp(Math.round(p*pct/100)));se('wsmv',fp(p-Math.round(p*pct/100)));}
+  else{se('wspv','—');se('wsmv','—');}
+}
+function onWsDirect(){var d=Number(document.getElementById('ewsd').value),p=Number(document.getElementById('eprice').value)||0;if(d>0&&p>0){document.getElementById('ewspct').value=Math.round(d/p*100);se('wspv',fp(d));se('wsmv',fp(p-d));}}
+
+/* ═══ IMAGE ═══ */
+function onFileUp(e){
+  var file=e.target.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var img=new Image();
+    img.onload=function(){
+      var MAX=1200,c=document.createElement('canvas'),w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+      c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
+      cphoto=c.toDataURL('image/jpeg',0.82);
+      document.getElementById('uppreview').innerHTML='<img src="'+cphoto+'">';
+      document.getElementById('uphint').style.display='none';
+      document.getElementById('clrph').style.display='block';
+    };img.src=ev.target.result;
+  };reader.readAsDataURL(file);
+}
+function clearPhoto(){cphoto='';document.getElementById('uppreview').innerHTML='';document.getElementById('uphint').style.display='flex';document.getElementById('clrph').style.display='none';document.getElementById('upf').value='';}
+
+/* ═══ TAGS ═══ */
+function renderTags(){var w=document.getElementById('twrap');w.innerHTML=ctags.map(function(tag,i){return'<span class="ti">'+tag+'<button onclick="rmTag('+i+')">×</button></span>';}).join('')+'<input class="tinput" id="tinput" placeholder="#hashtag" onkeydown="tagKey(event)">';}
+function tagKey(e){var inp=document.getElementById('tinput');if(e.key==='Enter'||e.key===' '||e.key===','){e.preventDefault();var v=inp.value.trim().replace(/,$/,'');if(v&&ctags.length<10){if(!v.startsWith('#'))v='#'+v;ctags.push(v);renderTags();document.getElementById('tinput').focus();}}}
+function rmTag(i){ctags.splice(i,1);renderTags();}
+
+/* ═══ AI TRANSLATE ═══ */
+async function transArt(a){
+  if(!a.title&&!a.intro)return;
+  ntf('AI 翻譯中…','am');
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:'Translate from Traditional Chinese to English, Japanese, Korean.\nTitle: '+a.title+'\nDescription: '+(a.intro||'')+'\nRespond ONLY with JSON:\n{"en":{"title":"...","intro":"..."},"ja":{"title":"...","intro":"..."},"ko":{"title":"...","intro":"..."}}'}]})});
+    var data=await r.json();
+    var text=(data.content||[]).map(function(i){return i.text||'';}).join('');
+    var p=JSON.parse(text.replace(/```json|```/g,'').trim());
+    if(!a.i18n)a.i18n={};
+    ['en','ja','ko'].forEach(function(l){if(p[l]&&(!a.i18n[l]||!a.i18n[l].manual))a.i18n[l]={title:p[l].title,intro:p[l].intro,manual:false};});
+    renderAdmin();schedSave();ntf('翻譯完成 ✓','gr');
+  }catch(e){ntf('AI 翻譯失敗，可手動編輯');}
+}
+
+/* ═══ BANK ═══ */
+function buildBank(){
+  var x=L[lang];
+  return'<div class="bank"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:8px"><div style="font-size:13px;font-weight:700;letter-spacing:.07em;color:var(--gd)">'+x.bkttl+'</div><div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.28);letter-spacing:.1em">moro young</div></div>'
+  +'<div class="bkgrid"><div><div class="bfl">'+x.blbank+'</div><div class="bfv">E.Sun Commercial Bank, Ltd., Taipei, Taiwan</div></div>'
+  +'<div><div class="bfl">'+x.blbr+'</div><div class="bfv">Hsinchu Branch</div></div>'
+  +'<div><div class="bfl">SWIFT Code</div><div class="bfv">ESUNTWTP</div></div>'
+  +'<div><div class="bfl">'+x.blbene+'</div><div class="bfv">YENCHEN LIU</div></div>'
+  +'<div style="grid-column:1/-1"><div class="bfl">'+x.blacct+'</div><div class="bacct">0060979366825</div></div>'
+  +'</div><div class="bcon"><span>(+886) 905 025 802</span><span>liuyen.c4@gmail.com</span>'
+  +'<span><a href="https://moroyoung.com/" style="color:var(--gd)">moroyoung.com</a></span></div></div>';
+}
+
+/* ═══ EXPORT ═══ */
+function showExport(){var p=document.getElementById('expsec');p.style.display=p.style.display==='none'?'block':'none';if(p.style.display==='block')p.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function hideExport(){document.getElementById('expsec').style.display='none';}
+function copyClientLink(){
+  /* Client link = base URL without ?admin, so visitors see client view */
+  var url=location.origin+location.pathname;
+  navigator.clipboard&&navigator.clipboard.writeText(url).then(function(){ntf('連結已複製！客人打開直接看客戶版 ✓','gr');}).catch(function(){prompt('複製此連結給客人：',url);});
+}
+function exportHTML(){
+  var x=L[lang],ff=lang==='ja'?"'Noto Sans JP','Microsoft JhengHei',sans-serif":lang==='ko'?"'Noto Sans KR','Microsoft JhengHei',sans-serif":"'Microsoft JhengHei','Noto Sans TC',sans-serif";
+  var visible=arts.filter(function(a){return sel[a.id];});
+  var cards=visible.map(function(a){
+    var p=a.price[x.k]||0,dt=gloc(a,'title',lang),di=gloc(a,'intro',lang);
+    var imgSrc=a.photo?'<img src="'+a.photo+'" style="width:100%;height:188px;object-fit:cover;display:block" onerror="this.style.display=\'none\'">'
+      :'<div style="width:100%;height:188px;background:#f8fafc;display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/></svg></div>';
+    var prH='';
+    var wsH='';
+    var tagsH=a.hashtags&&a.hashtags.length?'<div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:7px">'+a.hashtags.map(function(tg){return'<span style="padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700;background:#f8fafc;color:#64748b">'+tg+'</span>';}).join('')+'</div>':'';
+    var bioH=a.authorBio?'<div style="margin-top:9px;padding:9px 11px;background:#f8fafc;border-radius:9px;border-left:3px solid #cbd5e1"><div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">'+x.bioL+'</div><div style="font-size:12px;color:#475569;line-height:1.7">'+a.authorBio+'</div></div>':'';
+    var introH=di?'<div style="font-size:12px;color:#64748b;line-height:1.75;margin-top:9px;padding-top:9px;border-top:1px solid #f1f5f9">'+di+'</div>':'';
+    var drvH=a.driveFolder?'<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:11px;padding:12px;margin-top:10px"><div style="font-size:10px;font-weight:700;color:#2563eb;margin-bottom:7px;text-transform:uppercase">'+x.drvT+'</div><a href="'+a.driveFolder+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:7px 16px;background:#2563eb;color:#fff;border-radius:9px;font-size:12px;font-weight:700;text-decoration:none">'+x.drvB+'</a></div>':'';
+    return'<div style="background:#fff;border:1px solid #e2e8f0;border-radius:18px;overflow:hidden;position:relative">'
+      +'<div style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,.9);border-radius:5px;padding:2px 6px;font-size:10px;font-weight:700;color:#94a3b8">'+(a.id<10?'0'+a.id:a.id)+'</div>'
+      +imgSrc+'<div style="padding:14px"><div style="font-size:18px;font-weight:700;color:#0f172a;line-height:1.2;margin-bottom:3px">'+dt+'</div>'
+      +'<div style="font-size:11px;color:#94a3b8;margin-bottom:4px">'+a.author+'</div>'
+      +prH+wsH+tagsH+bioH+introH+drvH+'</div></div>';
+  }).join('');
+  var html='<!DOCTYPE html><html lang="'+lang+'"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>moro young</title>'
+    +'<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#f8fafc;color:#0f172a;font-family:'+ff+';font-size:14px;line-height:1.6}'
+    +'.top{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 26px}.brand{font-size:22px;font-weight:700;letter-spacing:.04em}'
+    +'.disc{background:linear-gradient(135deg,#0f172a,#1a2e4a);padding:16px 26px}'
+    +'.dt{font-size:13px;font-weight:700;color:#d4a853;margin-bottom:5px}'
+    +'.dd{font-size:12px;color:rgba(255,255,255,.52);line-height:1.75}.dd a{color:#d4a853;text-decoration:none}'
+    +'.page{max-width:1200px;margin:0 auto;padding:22px}'
+    +'.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}'
+    +'@media(max-width:500px){.top,.page{padding-left:14px;padding-right:14px}.disc{padding:14px}.grid{grid-template-columns:1fr}}'
+    +'</style></head><body>'
+    +'<div class="top"><div class="brand">moro young</div></div>'
+    +'<div class="disc"><div class="dt">'+x.discT+'</div><div class="dd">'+x.discTxt+'<br>'+x.discCon+'</div></div>'
+    +'<div class="page"><div style="font-size:24px;font-weight:700;margin-bottom:18px">'+x.hero+'</div>'
+    +'<div class="grid">'+cards+'</div>'+(showBank?buildBank():'')
+    +'<div style="text-align:center;padding:24px 0;font-size:11px;color:#94a3b8">moro young © 2025 · Independent Art Publishing</div>'
+    +'</div></body></html>';
+  var blob=new Blob([html],{type:'text/html'});
+  var el=document.createElement('a');el.href=URL.createObjectURL(blob);el.download='moroyoung_catalog_'+lang+'.html';el.click();
+  ntf('HTML 已下載！','gr');
+}
+
+function imgFail(el){var d=document.createElement('div');d.className='piph';d.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>';el.parentNode.replaceChild(d,el);}
+
+/* ═══ INIT ═══ */
+loadLocal();
+arts.forEach(function(a){if(!a.i18n)a.i18n={};if(!a.driveFolder)a.driveFolder='';if(!a.authorBio)a.authorBio='';if(sel[a.id]===undefined)sel[a.id]=true;});
+
+if(isAdmin){
+  /* ADMIN MODE */
+  document.getElementById('adminPage').style.display='block';
+  applyTogs();
+  document.getElementById('s0').classList.remove('bgh');document.getElementById('s0').classList.add('bink');
+  applyLang();renderAdmin();
+  setCUI(cloud?'on':'off');
+  if(cloud)cloudLoad(true).then(function(ok){if(ok)renderAdmin();});
+}else{
+  /* CLIENT MODE: load from cloud, show client page */
+  document.getElementById('clientPage').style.display='block';
+  applyLang();
+  if(cloud&&cbid){
+    /* Load latest data from cloud then render */
+    cloudLoad(true).then(function(ok){
+      document.getElementById('clientLoading').style.display='none';
+      document.getElementById('cgrid').style.display='grid';
+      renderClient();
+    }).catch(function(){
+      /* Fall back to cached local data */
+      document.getElementById('clientLoading').style.display='none';
+      document.getElementById('cgrid').style.display='grid';
+      renderClient();
+    });
+  }else{
+    /* No cloud: show local cached data */
+    document.getElementById('clientLoading').style.display='none';
+    document.getElementById('cgrid').style.display='grid';
+    renderClient();
+  }
+  document.getElementById('cs0').classList.remove('bgh');document.getElementById('cs0').classList.add('bink');
+}
+</script>
+</body>
+</html>
